@@ -33,8 +33,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Push to Docker Hub
+      - name: Build Docker Container
         run: docker build -t robobird .
 
       - name: Push to Docker Hub
-        run: docker push lucascdk/robobird:latest
+        run: docker push lucascdk/robobird
