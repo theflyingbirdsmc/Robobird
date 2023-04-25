@@ -34,10 +34,10 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+      - name: Publish Docker Image
+        uses: docker/build-push-action@v1
         with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          token: ${{ secrets.DOCKER_TOKEN }}
+          repository: theflyingbirds/robobird
+          tags: latest, ${{ github.run_number }}
