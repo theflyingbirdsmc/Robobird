@@ -4,7 +4,8 @@ FROM python:3.9-slim
 # Set the working directory
 #WORKDIR files
 # Copy the requirements.txt file into the container
-COPY files/* .
+COPY files/config.json ./
+copy files/main.py ./
 COPY requirements.txt ./
 
 # Install the required packages
