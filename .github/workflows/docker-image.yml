@@ -26,7 +26,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: theflyingbirds/robobird
+          repository: lucascdk/robobird
           tags: latest, ${{ github.run_number }}
 
       - name: Extract metadata (tags, labels) for Docker
@@ -34,11 +34,3 @@ jobs:
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      - name: Publish Docker Image
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: theflyingbirds/robobird
-          tags: latest, ${{ github.run_number }}
