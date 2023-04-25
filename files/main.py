@@ -1,3 +1,4 @@
+import os
 import discord
 import json
 from discord.ext import commands, tasks
@@ -7,7 +8,7 @@ from mcstatus import JavaServer
 with open("config.json", "r") as config_file:
     config = json.load(config_file)
 
-TOKEN = "$Secrets.TOKEN"
+TOKEN = os.environ['BOT_TOKEN']
 IP_ADDRESS = "mc.theflyingbirds.net"
 
 intents = discord.Intents.default()
