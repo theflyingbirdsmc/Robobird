@@ -34,4 +34,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Push to Docker Hub
-        run: docker push lucascdk/robobird:tagname
+        run: docker build -t robobird .
+
+      - name: Push to Docker Hub
+        run: docker push lucascdk/robobird:latest
