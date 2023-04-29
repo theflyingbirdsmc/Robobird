@@ -1,12 +1,7 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: robobird-namespace
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: robobird
+  name: robobird-deployment
   namespace: robobird-namespace
 spec:
   replicas: 1
@@ -19,8 +14,12 @@ spec:
         app: robobird
     spec:
       containers:
-        - name: robobird
-          image: lucascdk/robobird:main
-          env:
-            - name: BOT_TOKEN
-              value: $BOT_TOKEN
+      - name: robobird
+        image: lucascdk/robobird:main
+        imagePullPolicy: Always # Add this line
+        env:
+        - name: BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: bot-token-secret
+              key: token
