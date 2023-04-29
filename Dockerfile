@@ -15,5 +15,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Start the Discord bot
+RUN echo $BOT_TOKEN
 CMD ["python", "main.py"]
-CMD ["echo"], ["$BOT_TOKEN"]
+
