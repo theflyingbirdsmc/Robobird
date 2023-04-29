@@ -62,6 +62,6 @@ jobs:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: |
           echo "$KUBECONFIG" > kubeconfig.yaml
-          kubectl create secret generic bot-token-secret --from-literal=token="$BOT_TOKEN" -n robobird-namespace --dry-run=client -o yaml --kubeconfig=kubeconfig.yaml | kubectl apply -f - --kubeconfig=kubeconfig.yaml
+          kubectl create secret generic bot-token-secret --from-literal=token="$BOT_TOKEN" -n tfb-services --dry-run=client -o yaml --kubeconfig=kubeconfig.yaml | kubectl apply -f - --kubeconfig=kubeconfig.yaml
           kubectl apply -f kubernetes/robobird-deployment.yaml --kubeconfig=kubeconfig.yaml
-          kubectl rollout restart deployment/robobird-deployment -n robobird-namespace --kubeconfig=kubeconfig.yaml
+          kubectl rollout restart deployment/robobird-deployment -n tfb-services --kubeconfig=kubeconfig.yaml
