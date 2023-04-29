@@ -30,4 +30,4 @@ jobs:
       run: |
         echo "$KUBECONFIG" > kubeconfig.yaml
         kubectl create secret generic bot-token-secret --from-literal=token="$BOT_TOKEN" -n robobird-namespace --dry-run=client -o yaml --kubeconfig=kubeconfig.yaml | kubectl apply -f - --kubeconfig=kubeconfig.yaml
-        kubectl apply -f robobird-deployment.yaml --kubeconfig=kubeconfig.yaml
+        kubectl apply -f kubernetes/robobird-deployment.yaml --kubeconfig=kubeconfig.yaml
