@@ -9,6 +9,10 @@ with open("config.json", "r") as config_file:
     config = json.load(config_file)
 
 TOKEN = os.environ['BOT_TOKEN']
+print("--------------------")
+print(f"Bot Token: {TOKEN}")
+print("--------------------")
+
 IP_ADDRESS = "mc.theflyingbirds.net"
 
 intents = discord.Intents.default()
