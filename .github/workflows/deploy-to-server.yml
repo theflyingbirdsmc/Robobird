@@ -1,0 +1,33 @@
+name: Deploy to local Kubernetes cluster
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Kubectl
+      run: |
+        VERSION=$(curl --silent https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+        curl https://storage.googleapis.com/kubernetes-release/release/$VERSION/bin/linux/amd64/kubectl \
+          --progress-bar \
+          --location \
+          --remote-name
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+
+    - name: Deploy to Kubernetes
+      env:
+        KUBECONFIG: ${{ secrets.KUBECONFIG }}
+        BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+      run: |
+        echo "$KUBECONFIG" | base64 --decode > kubeconfig.yaml1
+        kubectl create secret generic bot-token-secret --from-literal=token="$BOT_TOKEN" -n robobird-namespace --dry-run=client -o yaml --kubeconfig=kubeconfig.yaml | kubectl apply -f - --kubeconfig=kubeconfig.yaml
+        kubectl apply -f robobird-deployment.yaml --kubeconfig=kubeconfig.yaml
