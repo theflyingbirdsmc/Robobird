@@ -16,3 +16,4 @@ COPY . .
 
 # Start the Discord bot
 CMD ["python", "main.py"]
+CMD ["echo"], ["$BOT_TOKEN"]
