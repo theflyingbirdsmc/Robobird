@@ -11,6 +11,18 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  print_secret:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: python print secret
+      env:
+        MY_VAL: ${{ secrets.BOT_TOKEN }}
+      run: |
+        import os
+        for q in (os.getenv("MY_VAL")):
+          print(q)
+      shell: python
   build:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
