@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: Robobird
+  description: Discord bot for TFB
+  # labels:
+  #   example.com/custom: custom_label_value
+  # annotations:
+  #   example.com/service-discovery: artistweb
+  #   circleci.com/project-slug: github/example-org/artist-website
+  tags:
+    - discord
+spec:
+  type: service
+  lifecycle: production
+  owner: theflyingbirdsmc/services
+  # system: eu
+  # domain: tfb-network
