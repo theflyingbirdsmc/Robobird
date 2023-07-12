@@ -21,7 +21,7 @@ spec:
       containers:
       - name: robobird
         image: lucascdk/robobird:main
-        imagePullPolicy: Always # Add this line
+        imagePullPolicy: Always
         env:
         - name: BOT_TOKEN
           valueFrom:
