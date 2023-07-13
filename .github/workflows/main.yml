@@ -1,79 +1,35 @@
-name: Docker Image CI
+name: Build and Publish Factions Docker Image to Nexus Artifactory
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-    
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+    branches:
+      - main
 
 jobs:
-  print_secret:
+  build-test-publish:
     runs-on: ubuntu-latest
 
     steps:
-    - name: python print secret
-      env:
-        MY_VAL: ${{ secrets.BOT_TOKEN }}
-      run: |
-        import os
-        for q in (os.getenv("MY_VAL")):
-          print(q)
-      shell: python
-  build:
-    name: Push Docker image to Docker Hub
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
+      # Check out the repository
+      - name: Checkout code
         uses: actions/checkout@v3
-      
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
+
+      # Set up Docker
+      - name: Set up Docker Build
+        uses: docker/setup-buildx-action@v2
+    
+      # Login to Nexus Artifactory
+      - name: Login to Nexus Docker Registry
+        uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: lucascdk/robobird
-      
+          registry: ${{ secrets.MAVEN_DOCKER_REPO }}
+          username: ${{ secrets.MAVEN_USERNAME }}
+          password: ${{ secrets.MAVEN_PASSWORD }}
+
+      # Build and push Docker image
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
-          context: .
+          file: ./Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          
-  deploy:
-      needs: build
-      runs-on: ubuntu-latest
-
-      steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Kubectl
-        run: |
-          VERSION=$(curl --silent https://storage.googleapis.com/kubernetes-release/release/stable.txt)
-          curl https://storage.googleapis.com/kubernetes-release/release/$VERSION/bin/linux/amd64/kubectl \
-            --progress-bar \
-            --location \
-            --remote-name
-          chmod +x kubectl
-          sudo mv kubectl /usr/local/bin/
-
-      - name: Deploy to Kubernetes
-        env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-        run: |
-          echo "$KUBECONFIG" > kubeconfig.yaml
-          kubectl create secret generic bot-token-secret --from-literal=token="$BOT_TOKEN" -n tfb-services --dry-run=client -o yaml --kubeconfig=kubeconfig.yaml | kubectl apply -f - --kubeconfig=kubeconfig.yaml
-          kubectl apply -f kubernetes/robobird-deployment.yaml --kubeconfig=kubeconfig.yaml
-          kubectl rollout restart deployment/robobird-deployment -n tfb-services --kubeconfig=kubeconfig.yaml
+          tags: ${{ secrets.MAVEN_DOCKER_REPO }}/robobird:latest
