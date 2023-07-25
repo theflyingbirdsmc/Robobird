@@ -28,6 +28,23 @@ async def update_status():
 
     return channel_name
 
+@bot.command(name="playersonline")
+async def playersonline(ctx):
+    server = JavaServer.lookup(IP_ADDRESS)
+    try:
+        query = server.query()
+        status = server.status()
+        online_players = ', '.join(query.players.names)
+        channel_name = f"🟢 Online: {status.players.online}/{status.players.max}"
+    except Exception as e:
+        print(f"Error fetching server status: {e}")
+        channel_name = "🔴 Offline"
+        online_players = "No players online"
+
+    embed = discord.Embed(title="Minecraft Server Status", description=channel_name, color=0x00ff00)
+    embed.add_field(name="Online Players", value=online_players, inline=False)
+    await ctx.send(embed=embed)
+
 @bot.event
 async def on_ready():
     print(f"{bot.user} has connected to Discord!")
