@@ -1,26 +1,29 @@
 import os
 import discord
-from mcstatus import JavaServer
+import requests
 from discord.ext import tasks
-
 
 TOKEN = os.environ['BOT_TOKEN']
 IP_ADDRESS = os.environ['IP']
-server = JavaServer.lookup(IP_ADDRESS)
 
 # Set up the necessary intents
 intents = discord.Intents.default()
-intents.messages = True  # If you need to handle messages, set this to True
 
 client = discord.Client(intents=intents)
 
-def get_server_status():
+def get_server_status(ip_address):
+    url = f"https://api.mcstatus.io/v2/status/java/{ip_address}"
     try:
-        server = mcstatus.lookup(IP_ADDRESS)
-        status = server.status()
-        return f'{status.players.online} players online'
-    except Exception:
-        return "Server Offline"
+        response = requests.get(url)
+        data = response.json()
+        if data["online"]:
+            players_online = data["players"]["online"]
+            return f'{players_online} players online'
+        else:
+            return "Server Offline"
+    except Exception as e:
+        print(f"Error: {e}")
+        return "Error checking server status"
 
 @client.event
 async def on_ready():
@@ -29,7 +32,7 @@ async def on_ready():
 
 @tasks.loop(minutes=5)  # Update every 5 minutes
 async def update_status():
-    status = get_server_status()
+    status = get_server_status(IP_ADDRESS)
     await client.change_presence(activity=discord.Game(name=status))
 
 client.run(TOKEN)
