@@ -1,10 +1,12 @@
 import os
 import discord
-import mcstatus
+from mcstatus import JavaServer
 from discord.ext import tasks
+
 
 TOKEN = os.environ['BOT_TOKEN']
 IP_ADDRESS = os.environ['IP']
+server = JavaServer.lookup(IP_ADDRESS)
 
 # Set up the necessary intents
 intents = discord.Intents.default()
