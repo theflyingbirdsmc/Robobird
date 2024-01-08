@@ -1,6 +1,6 @@
 import os
 import discord
-from mcstatus import MinecraftServer
+import mcstatus
 from discord.ext import tasks
 
 TOKEN = os.environ['BOT_TOKEN']
@@ -10,7 +10,7 @@ client = discord.Client()
 
 def get_server_status():
     try:
-        server = MinecraftServer.lookup(IP_ADDRESS)
+        server = mcstatus.lookup(IP_ADDRESS)
         status = server.status()
         return f'{status.players.online} players online'
     except Exception as e:
