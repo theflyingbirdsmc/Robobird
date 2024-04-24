@@ -3,13 +3,11 @@ kind: Component
 metadata:
   name: Robobird
   description: Discord bot for TFB
-  # labels:
-  #   example.com/custom: custom_label_value
-  # annotations:
-  #   example.com/service-discovery: artistweb
-  #   circleci.com/project-slug: github/example-org/artist-website
+  annotations:
+    github.com/project-slug: theflyingbirdsmc/Robobird
   tags:
     - discord
+    - bot
 spec:
   type: service
   lifecycle: production
