@@ -1,0 +1,8 @@
+site_name: 'Robobird-docs'
+
+nav:
+  - Home: index.md
+  - Readme: ../README.md
+
+plugins:
+  - techdocs-core
