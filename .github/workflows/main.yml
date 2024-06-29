@@ -33,3 +33,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.MAVEN_DOCKER_REPO }}/robobird:latest
+          build-args: |
+            BOT_TOKEN=${{secrets.BOT_TOKEN}}
