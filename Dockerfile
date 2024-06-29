@@ -8,6 +8,8 @@ COPY files/config.json ./
 COPY files/main.py ./
 COPY requirements.txt ./
 
+ARG BOT_TOKEN
+ENV BOT_TOKEN=$BOT_TOKEN
 # Install the required packages
 RUN pip install --no-cache-dir -r requirements.txt
 
