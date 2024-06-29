@@ -1,38 +1,70 @@
 import os
 import discord
-import requests
-from discord.ext import tasks
+import json
+from discord.ext import commands, tasks
+from mcstatus import JavaServer
+
+# Load configuration from config.json
+with open("config.json", "r") as config_file:
+    config = json.load(config_file)
 
 TOKEN = os.environ['BOT_TOKEN']
 IP_ADDRESS = os.environ['IP']
 
-# Set up the necessary intents
 intents = discord.Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix="!", intents=intents)
 
-client = discord.Client(intents=intents)
-
-def get_server_status(ip_address):
-    url = f"https://api.mcstatus.io/v2/status/java/{ip_address}"
-    try:
-        response = requests.get(url)
-        data = response.json()
-        if data["online"]:
-            players_online = data["players"]["online"]
-            return f'{players_online} players online'
-        else:
-            return "Server Offline"
-    except Exception as e:
-        print(f"Error: {e}")
-        return "Error checking server status"
-
-@client.event
-async def on_ready():
-    print(f'{client.user.name} has connected to Discord!')
-    update_status.start()
-
-@tasks.loop(minutes=5)  # Update every 5 minutes
+# Update the Minecraft server status
 async def update_status():
-    status = get_server_status(IP_ADDRESS)
-    await client.change_presence(activity=discord.Game(name=status))
+    server = JavaServer.lookup(IP_ADDRESS)
+    try:
+        status = server.status()
+        channel_name = f"🟢 Online: {status.players.online}/{status.players.max}"
+    except Exception as e:
+        print(f"Error fetching server status: {e}")
+        channel_name = "🔴 Offline"
 
-client.run(TOKEN)
+    return channel_name
+
+@bot.command(name="playersonline")
+async def playersonline(ctx):
+    server = JavaServer.lookup(IP_ADDRESS)
+    try:
+        query = server.query()
+        status = server.status()
+        online_players = ', '.join(query.players.names)
+        channel_name = f"🟢 Online: {status.players.online}/{status.players.max}"
+    except Exception as e:
+        print(f"Error fetching server status: {e}")
+        channel_name = "🔴 Offline"
+        online_players = "No players online"
+
+    embed = discord.Embed(title="Minecraft Server Status", description=channel_name, color=0x00ff00)
+    embed.add_field(name="Online Players", value=online_players, inline=False)
+    await ctx.send(embed=embed)
+
+@bot.event
+async def on_ready():
+    print(f"{bot.user} has connected to Discord!")
+    
+    guild = bot.guilds[0]  # Assuming the bot is in only one server
+    if config["channel_id"]:
+        channel = guild.get_channel(config["channel_id"])
+    else:
+        # Create new voice channel at the top of the server
+        overwrites = {guild.default_role: discord.PermissionOverwrite(connect=False)}
+        channel = await guild.create_voice_channel("minecraft-server-status", position=0, overwrites=overwrites)
+        # Save channel ID in the config file
+        config["channel_id"] = channel.id
+        with open("config.json", "w") as config_file:
+            json.dump(config, config_file)
+    
+    update_status_loop.start(channel)
+
+@tasks.loop(minutes=5)
+async def update_status_loop(channel):
+    new_name = await update_status()
+    await channel.edit(name=new_name)
+
+bot.run(TOKEN)
