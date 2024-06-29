@@ -1,0 +1,36 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: robobird
+  namespace: tfb-backend
+  labels:
+    run: robobird
+spec:
+  serviceName: "robobird"
+  replicas: 1
+  selector:
+    matchLabels:
+      run: robobird
+  template:
+    metadata:
+      labels:
+        run: robobird
+    spec:
+      containers:
+      - name: robobird
+        image: docker.theflyingbirds.net/robobird:latest
+        volumeMounts:
+          - name: robobird-pv
+            mountPath: /files
+        resources:
+          requests:
+            memory: "4Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: robobird-pv
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Gi
