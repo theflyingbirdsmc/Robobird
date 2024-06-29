@@ -20,6 +20,9 @@ spec:
       containers:
       - name: robobird
         image: docker.theflyingbirds.net/robobird:latest
+        env:
+        - name: IP
+          value: "mc.theflyingbirds.net"
         volumeMounts:
           - name: robobird-pv
             mountPath: /files
