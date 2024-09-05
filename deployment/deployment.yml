@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: robobird
-        image: docker.theflyingbirds.net/robobird:latest
+        image: harbor.theflyingbirds.net/tfb/robobird:latest
         env:
         - name: IP
           value: "mc.theflyingbirds.net"
@@ -28,7 +28,9 @@ spec:
             mountPath: /files
         resources:
           requests:
-            memory: "4Gi"
+            memory: "2Gi"
+      imagePullSecrets:
+      - name: regcred
   volumeClaimTemplates:
   - metadata:
       name: robobird-pv
