@@ -22,9 +22,9 @@ jobs:
       - name: Login to Nexus Docker Registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ secrets.MAVEN_DOCKER_REPO }}
-          username: ${{ secrets.MAVEN_USERNAME }}
-          password: ${{ secrets.MAVEN_PASSWORD }}
+          registry: ${{ secrets.HARBOR_DOCKER_REGISTRY }}
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
 
       # Build and push Docker image
       - name: Build and push Docker image
@@ -32,6 +32,6 @@ jobs:
         with:
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.MAVEN_DOCKER_REPO }}/robobird:latest
+          tags: ${{ secrets.HARBOR_DOCKER_REGISTRY }}/robobird:latest
           build-args: |
             BOT_TOKEN=${{secrets.BOT_TOKEN}}
