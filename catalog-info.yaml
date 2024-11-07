@@ -5,7 +5,6 @@ metadata:
   description: Discord bot for TFB
   annotations:
     github.com/project-slug: theflyingbirdsmc/Robobird
-    backstage.io/techdocs-ref: dir:.
   tags:
     - discord
     - bot
