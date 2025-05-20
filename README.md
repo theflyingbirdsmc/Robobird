@@ -27,7 +27,7 @@ This function fetches the status of the Minecraft server and returns a formatted
 ### on_ready()
 This event is triggered when the bot is connected and ready. It creates a new voice channel at the top of the server if the channel ID isn't found in the `config.json` file, saves the channel ID, and starts the `update_status_loop` task.
 
-### update_status_loop(channel)
+### update_status_loop
 This task runs every 5 minutes and updates the channel name with the Minecraft server's status.
 
 ### Setup and Running the Bot
