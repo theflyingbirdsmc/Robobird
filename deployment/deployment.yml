@@ -39,3 +39,13 @@ spec:
       resources:
         requests:
           storage: 10Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: regcred
+  namespace: tfb-services
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: >-
+    eyJhdXRocyI6eyJkb2NrZXIudGhlZmx5aW5nYmlyZHMubmV0Ijp7InVzZXJuYW1lIjoicm9ib3QkdGZiIiwicGFzc3dvcmQiOiJRMUI4MlhmUFFvRmRwMUJKSGhpY25aYTk5R1VXaWlPZyIsImF1dGgiOiJjbTlpYjNRa2RHWmlPbEV4UWpneVdHWlFVVzlHWkhBeFFrcElhR2xqYmxwaE9UbEhWVmRwYVU5biJ9fX0=
