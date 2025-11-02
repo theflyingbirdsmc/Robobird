@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: robobird
-        image: harbor.theflyingbirds.net/tfb/robobird:latest
+        image: docker.theflyingbirds.net/tfb-services/robobird:latest
         env:
         - name: IP
           value: "mc.theflyingbirds.net"
