@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: robobird
-  namespace: tfb-backend
+  namespace: tfb-services
   labels:
     run: robobird
 spec:
@@ -35,6 +35,7 @@ spec:
       name: robobird-pv
     spec:
       accessModes: ["ReadWriteOnce"]
+      storageClassName: local-path
       resources:
         requests:
           storage: 10Gi
